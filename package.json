@@ -19,6 +19,7 @@
   "homepage": "https://github.com/dudeDeni/Project-Movies#readme",
   "dependencies": {
     "express": "^4.17.3",
-    "swagger-ui-express": "^4.3.0"
+    "swagger-ui-express": "^4.3.0",
+    "yamljs": "^0.3.0"
   }
 }

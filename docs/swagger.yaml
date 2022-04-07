@@ -1,0 +1,97 @@
+openapi: 3.0.2
+info:
+  title: Movies-API
+  version: 1.0.0
+  description: >-
+    ### This is a Swagger UI for our Movies API  \n\n### Error handling\nErrors are presented using the
+    HTTP status codes 400-599. The response include a more detailed explanation about the error in the
+    body.\n\n```\n{\n  \"error\": \"Cleartext explanation of the error that occurred\"\n}\n```\n\n###
+    Generic API errors\nThese error responses can be returned by any of the described endpoints.\n\n| HTTP
+    status  |  Description |\n|---|---|\n| 400| Bad input parameters or invalid request. More information
+    can be found in the response body.\n| 401| The consumer does not have access to the requested resource
+    or the provided token is not valid.\n| 404| The requested resource can not be found or the user does
+    not have access to the resource.\n| 5XX| A server error has occurred while processing the request.
+paths:
+  /movies:
+    get:
+      tags:
+        - movies
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                List of movies:
+                  value:
+                    - Indiana Jones
+                    - Matrix
+          description: Return a list of movies
+      summary: Get a list of all movies
+      description: Return a list of all movies in API
+  "/movies/{id}":
+    get:
+      tags:
+        - details
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                Full details of movies:
+                  value:
+                    - id: 1
+                      name: Indiana Jones
+                      price: 19.59
+                    - id: 2
+                      name: Matrix
+                      price: 29.59
+                    - id: 3
+                      name: Star Wars
+                      price: 19.59
+                    - id: 4
+                      name: Sin City
+                      price: 19.59
+                    - id: 5
+                      name: Who killed Rogger Rabbit
+                      price: 19.59
+                    - id: 6
+                      name: Kill Bill
+                      price: 19.59
+                    - id: 7
+                      name: Pulp Fiction
+                      price: 19.59
+                    - id: 8
+                      name: Saving Private Banner
+                      price: 19.59
+          description: Return full details of a given id game
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                Movies /w+ was not found:
+                  value:
+                    error: Game \w+ was not found in game array.
+          description: Game was not found in games array
+      summary: Get full details of a game
+      description: Return full details of a given id game
+components:
+  schemas:
+    error:
+      title: Root Type for error
+      description: ""
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: Error message.
