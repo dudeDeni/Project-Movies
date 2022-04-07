@@ -32,6 +32,29 @@ paths:
           description: Return a list of movies
       summary: Get a list of all movies
       description: Return a list of all movies in API
+    post:
+      requestBody:
+        description: a NEW MOVIE TO BE CREATED
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/error"
+            examples:
+              Creating movie error:
+                value:
+                  error: It is requested
+        required: true
+      tags:
+        - new-movie
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/new-movie"
+          description: Creates a movie
+      summary: Creates a movie
+      description: Creates a new movie
   "/movies/{id}":
     get:
       tags:
@@ -84,6 +107,32 @@ paths:
           description: Game was not found in games array
       summary: Get full details of a game
       description: Return full details of a given id game
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/delete-movie"
+            examples:
+              Delete movie:
+                value:
+                  id: 1
+        required: true
+      tags:
+        - deleting
+      responses:
+        "204": {}
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                Movies /w+ was not found:
+                  value:
+                    error: Movie not found
+      summary: Delete movie
+      description: Splice the movie from array
 components:
   schemas:
     error:
@@ -95,3 +144,30 @@ components:
           type: string
       example:
         error: Error message.
+    new-movie:
+      title: Root Type for new-movie
+      description: ""
+      required:
+        - price
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          format: float
+          type: number
+          readOnly: false
+      example:
+        name: Titanic
+        price: 8.49
+    delete-movie:
+      title: Root Type for delete-movie
+      description: This data type is currently a complex object.
+      required:
+        - id
+      type: object
+      properties:
+        id:
+          type: string
+      example:
+        id: 1
