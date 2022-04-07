@@ -11,7 +11,6 @@ const movies = [
 	{ id: 5, name: "Who killed Rogger Rabbit", price: 19.59 },
 	{ id: 6, name: "Kill Bill", price: 19.59 },
 	{ id: 7, name: "Pulp Fiction", price: 19.59 },
-	{ id: 8, name: "Saving Private Banner", price: 19.59 },
 ];
 
 app.get("/movies", (req, res) => {
