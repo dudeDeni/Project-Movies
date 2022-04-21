@@ -42,7 +42,11 @@ paths:
             examples:
               Creating movie error:
                 value:
-                  error: It is requested
+                  error: It is really requested
+              Create new movie:
+                value:
+                  name: Titanic
+                  price: 8.49
         required: true
       tags:
         - new-movie
@@ -57,6 +61,12 @@ paths:
       description: Creates a new movie
   "/movies/{id}":
     get:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: The user ID.
       tags:
         - details
       responses:
@@ -94,7 +104,7 @@ paths:
                     - id: 8
                       name: Saving Private Banner
                       price: 19.59
-          description: Return full details of a given id game
+          description: Return full details of a given id movie
         "404":
           content:
             application/json:
@@ -103,21 +113,17 @@ paths:
               examples:
                 Movies /w+ was not found:
                   value:
-                    error: Game \w+ was not found in game array.
-          description: Game was not found in games array
-      summary: Get full details of a game
-      description: Return full details of a given id game
+                    error: Movie \w+ was not found in movie array.
+          description: Movie was not found in movies array
+      summary: Get full details of a movie
+      description: Return full details of a given id movie
     delete:
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/delete-movie"
-            examples:
-              Delete movie:
-                value:
-                  id: 1
-        required: true
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: Insert the movie id that you want to delete.
       tags:
         - deleting
       responses:

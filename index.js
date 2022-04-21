@@ -36,8 +36,8 @@ app.post("/movies", (req, res) => {
 	}
 	let movie = {
 		id: movies.length + 1,
-		price: req.body.price,
 		name: req.body.name,
+		price: req.body.price,
 	};
 	movies.push(movie);
 
@@ -48,6 +48,7 @@ app.post("/movies", (req, res) => {
 });
 
 app.delete("/movies/:id", (req, res) => {
+	console.log("test");
 	if (typeof movies[req.params.id - 1] === "undefined") {
 		return res.status(404).send({ error: "Movie not found" });
 	}
