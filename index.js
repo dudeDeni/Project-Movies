@@ -9,6 +9,11 @@ const swaggerDocument = yamljs.load("./docs/swagger.yaml");
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static('./'));
+app.get('/', function(req,res) {
+	res.render('index.html');
+})
+
 const movies = [
 	{ id: 1, name: "Indiana Jones", price: 19.59 },
 	{ id: 2, name: "Matrix", price: 29.59 },
@@ -19,6 +24,7 @@ const movies = [
 	{ id: 7, name: "Pulp Fiction", price: 19.59 },
 	{ id: 8, name: "Saving Private Banner", price: 19.59 },
 ];
+
 
 app.get("/movies", (req, res) => {
 	res.send(movies);
@@ -66,7 +72,7 @@ app.listen(port, () => {
 	console.log(`API up at: http://localhost:${port}`);
 });
 
-function getBaseUrl(req) {
+const getBaseUrl = (req) => {
 	return req.connection && req.connection.encrypted
 		? "https"
 		: "http" + `://${req.headers.host}`;
