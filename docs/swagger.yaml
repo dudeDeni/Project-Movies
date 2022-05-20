@@ -139,6 +139,133 @@ paths:
                     error: Movie not found
       summary: Delete movie
       description: Splice the movie from array
+  /actors:
+    get:
+      tags:
+        - actors
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                List of actors:
+                  value:
+                    - Humphrey Bogart
+                    - Cary Grant
+          description: Return a list of actors
+      summary: Get a list of all actors
+      description: Return a list of all actors in API
+    post:
+      requestBody:
+        description: a NEW ACTOR TO BE CREATED
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/error"
+            examples:
+              Creating movie error:
+                value:
+                  error: It is really requested
+              Create new movie:
+                value:
+                  actorName: Betty White
+                  movieId: 2
+        required: true
+      tags:
+        - new-actor
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/new-actor"
+          description: Creates an actor
+      summary: Creates na actor
+      description: Creates a new actor
+  "/actors/{id}":
+    get:
+      parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+          description: The user ID.
+      tags:
+        - details
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                Full details of actors:
+                  value:
+                    - id: 1
+                      actorName: Humphrey Bogart
+                      movieId: 1
+                    - id: 2
+                      actorName: Cary Grant
+                      movieId: 2
+                    - id: 3
+                      actorName: James Stewart
+                      movieId: 1
+                    - id: 4
+                      actorName: Marlon Brando
+                      movieId: 2
+                    - id: 5
+                      actorName: Katharine Hepburn
+                      movieId: 2
+                    - id: 6
+                      actorName: Bette Davis
+                      movieId: 2
+                    - id: 7
+                      actorName: Audrey Hepburn
+                      movieId: 2
+                    - id: 8
+                      actorName: Ingrid Bergman
+                      movieId: 1
+          description: Return full details of a given id actor
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                Movies /w+ was not found:
+                  value:
+                    error: Actor \w+ was not found in actor array.
+          description: Actor was not found in actors array
+      summary: Get full details of an actor
+      description: Return full details of a given id actor
+    delete:
+      parameters:
+        - in: path
+          actorName: id
+          type: integer
+          required: true
+          description: Insert the actor id that you want to delete.
+      tags:
+        - deleting
+      responses:
+        "204": {}
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
+              examples:
+                Actors /w+ was not found:
+                  value:
+                    error: Actor not found
+      summary: Delete actor
+      description: Splice the actor from array
 components:
   schemas:
     error:
@@ -151,23 +278,23 @@ components:
       example:
         error: Error message.
     new-movie:
-      title: Root Type for new-movie
+      title: Root Type for new-actor
       description: ""
       required:
-        - price
+        - movieId
       type: object
       properties:
-        name:
+        actorName:
           type: string
-        price:
+        movieId:
           format: float
           type: number
           readOnly: false
       example:
-        name: Titanic
-        price: 8.49
+        actorName: Titanic
+        movieId: 1
     delete-movie:
-      title: Root Type for delete-movie
+      title: Root Type for delete-actor
       description: This data type is currently a complex object.
       required:
         - id

@@ -4,6 +4,7 @@ const app = express();
 const port = 8080;
 const swaggerUi = require("swagger-ui-express");
 const yamljs = require("yamljs");
+const { request } = require("express");
 const swaggerDocument = yamljs.load("./docs/swagger.yaml");
 
 app.use(cors());
@@ -26,14 +27,14 @@ const movies = [
 ];
 
 const actors = [
-	{ id: 1, actorName: "Humphrey Bogart", movieId: 1 },
-	{ id: 2, actorName: "Cary Grant", movieId: 2},
-	{ id: 3, actorName: "James Stewart", movieId: 1 },
-	{ id: 4, actorName: "Marlon Brando", movieId: 2 },
-	{ id: 5, actorName: "Katharine Hepburn", movieId: 2 },
-	{ id: 6, actorName: "Bette Davis", movieId: 2 },
-	{ id: 7, actorName: "Audrey Hepburn", movieId: 2 },
-	{ id: 8, actorName: "Ingrid Bergman", movieId: 1 },
+	{ id: 1, actorName: "Humphrey Bogart"},
+	{ id: 2, actorName: "Cary Grant"},
+	{ id: 3, actorName: "James Stewart"},
+	{ id: 4, actorName: "Marlon Brando"},
+	{ id: 5, actorName: "Katharine Hepburn"},
+	{ id: 6, actorName: "Bette Davis"},
+	{ id: 7, actorName: "Audrey Hepburn"},
+	{ id: 8, actorName: "Ingrid Bergman"},
 ];
 
 const movieActors = [
@@ -57,10 +58,20 @@ const movieActors = [
 
 
 app.get("/movies", (req, res) => {
-	res.send(movies);
+	moviesWithActors = movies.map((movie) => {
+		let copy = {...movie };
+		copy.actors = getMovieActors(movie.id);
+		return copy;
+	})
+	res.send(moviesWithActors);
 });
 app.get("/actors", (req, res) => {
-	res.send(actors);
+	actorsWithMovies = actors.map((actor) => {
+		let copy = {...actor};
+		copy.movies = getActorsByMovieId(actor.id);
+		return copy;
+	})
+	res.send(actorsWithMovies);
 });
 
 
@@ -74,7 +85,7 @@ app.get("/movies/:id", (req, res) => {
 
 app.get("/actors/:id", (req, res) => {
 	if (typeof actors[req.params.id - 1] === "undefined") {
-		return res.status(404).send({ error: "Movie not found" });
+		return res.status(404).send({ error: "Actor not found" });
 	}
 
 	res.send(actors[req.params.id - 1]);
@@ -85,8 +96,9 @@ app.post("/movies", (req, res) => {
 	if (!req.body.name || !req.body.price) {
 		return res.status(400).send({ error: "One or all params are missing" });
 	}
+	let lastId = movies[movies.length-1].id;
 	let movie = {
-		id: movies.length + 1,
+		id: lastId + 1,
 		name: req.body.name,
 		price: req.body.price,
 	};
@@ -99,14 +111,29 @@ app.post("/movies", (req, res) => {
 });
 
 app.delete("/movies/:id", (req, res) => {
+	let index = movies.findIndex(m => m.id == req.params.id)
 	console.log("test");
-	if (typeof movies[req.params.id - 1] === "undefined") {
+	if ( index == -1) {
 		return res.status(404).send({ error: "Movie not found" });
 	}
 
-	movies.splice(req.params.id - 1, 1);
+	movies.splice(index, 1);
 
-	res.status(204).send({ error: "No content" });
+	res.status(204).send();
+});
+
+app.put("/movies/:id", (req, res) => {
+	let movie = movies.find(m => m.id == req.params.id)
+	console.log("test");
+	if ( !movie ) {
+		return res.status(404).send({ error: "Movie not found" });
+	}
+
+	Object.keys(req.body).forEach(key => {
+		movie[key] = req.body[key];
+	});
+
+	res.status(204).send();
 });
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -119,4 +146,24 @@ const getBaseUrl = (req) => {
 	return req.connection && req.connection.encrypted
 		? "https"
 		: "http" + `://${req.headers.host}`;
+}
+
+
+
+function getMovieActors(movieId) {
+	let results = movieActors.filter( i => i.movieId == movieId);
+	return results.map((movieActor) => {
+		return actors.find( actor => {
+			return actor.id == movieActor.actorId;
+		})
+	})
+}
+
+function getActorsByMovieId(actorId) {
+	let results = movieActors.filter( i => i.actorId == actorId);
+	return results.map((movieActor) => {
+		return movies.find( movie => {
+			return movie.id == movieActor.movieId;
+		})
+	})
 }
